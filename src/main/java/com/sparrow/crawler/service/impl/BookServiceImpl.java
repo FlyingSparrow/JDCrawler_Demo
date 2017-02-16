@@ -1,7 +1,10 @@
 package com.sparrow.crawler.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sparrow.crawler.entity.Book;
 import com.sparrow.crawler.repository.BookRepository;
@@ -14,6 +17,7 @@ import com.sparrow.crawler.service.BookService;
  * @author wjc
  * @date 2017年2月14日
  */
+@Transactional
 @Service
 public class BookServiceImpl implements BookService {
 
@@ -29,6 +33,12 @@ public class BookServiceImpl implements BookService {
 	@Override
 	public Book findByBookId(String bookId) {
 		return bookRepository.findByBookId(bookId);
+	}
+
+	@Override
+	public boolean batchAddBook(List<Book> list) {
+		bookRepository.save(list);
+		return true;
 	}
 
 }

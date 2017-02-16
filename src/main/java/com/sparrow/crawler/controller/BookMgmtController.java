@@ -1,5 +1,7 @@
 package com.sparrow.crawler.controller;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +60,30 @@ public class BookMgmtController extends BaseController {
 			logger.error("图书信息保存出错，图书信息: {}，异常信息：{}", book, e);
 		}
 		return fail("图书信息保存失败，请重试");
+	}
+	
+	/**
+	 * 
+	 * <p>Description: 批量添加图书</p>
+	 * @param list
+	 * @return
+	 * @author wjc
+	 * @date 2017年2月15日
+	 */
+	@RequestMapping("/batchAddBook")
+	@ResponseBody
+	public AjaxResult batchAddBook(@RequestBody List<Book> list){
+		try {
+			if(list != null){
+				bookService.batchAddBook(list);
+				return success("success");
+			}else{
+				return fail("图书信息不能为空");
+			}
+		} catch (Exception e) {
+			logger.error("批量添加图书出错，图书信息: {}，异常信息：{}", list, e);
+		}
+		return fail("批量添加图书失败，请重试");
 	}
 	
 }
