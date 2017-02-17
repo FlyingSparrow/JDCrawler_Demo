@@ -3,15 +3,14 @@ package com.sparrow;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.sparrow.base.BaseTests;
 import com.sparrow.crawler.entity.Book;
-import com.sparrow.crawler.parser.UrlParser;
+import com.sparrow.crawler.parser.impl.JdParser;
 import com.sparrow.util.DateUtils;
+import com.sparrow.util.HttpUtils;
 
 /**
  * 
@@ -23,7 +22,7 @@ import com.sparrow.util.DateUtils;
 public class BookMgmtTest extends BaseTests {
 
 	@Autowired
-	private UrlParser urlParser;
+	private JdParser jdParser;
 	
 	/**
 	 * 
@@ -51,11 +50,11 @@ public class BookMgmtTest extends BaseTests {
 	
 	@Test
 	public void testJdCrawler(){
-		CloseableHttpClient client = HttpClients.createDefault();
 		// 我们要爬取的一个地址，这里可以从数据库中抽取数据，然后利用循环，可以爬取一个URL队列
-		String url = "http://search.jd.com/Search?keyword=Python&enc=utf-8&book=y&wq=Python&pvid=33xo9lni.p4a1qb";
+		String url = "http://search.jd.com/Search?keyword=Linux&enc=utf-8&book=y&wq=Python&pvid=33xo9lni.p4a1qb";
+		String html = HttpUtils.getRawHtml(url);
 		// 抓取的数据
-		List<Book> list = urlParser.parseUrl(client, url);
+		List<Book> list = jdParser.parse(html);
 		// 循环输出抓取的数据
 		for (Book book : list) {
 			logger.info("bookId: {}, bookName: {}, bookPrice: {}", book.getBookId(), 
@@ -71,11 +70,11 @@ public class BookMgmtTest extends BaseTests {
 	 */
 	@Test
 	public void testBatchAddBook(){
-		CloseableHttpClient client = HttpClients.createDefault();
 		// 我们要爬取的一个地址，这里可以从数据库中抽取数据，然后利用循环，可以爬取一个URL队列
-		String httpUrl = "http://search.jd.com/Search?keyword=Python&enc=utf-8&book=y&wq=Python&pvid=33xo9lni.p4a1qb";
+		String httpUrl = "http://search.jd.com/Search?keyword=Linux&enc=utf-8&book=y&wq=Python&pvid=33xo9lni.p4a1qb";
+		String html = HttpUtils.getRawHtml(httpUrl);
 		// 抓取的数据
-		List<Book> list = urlParser.parseUrl(client, httpUrl);
+		List<Book> list = jdParser.parse(html);
 		
 		String url = "/book/batchAddBook";
 		String response = performAndGetResponse(url, list);

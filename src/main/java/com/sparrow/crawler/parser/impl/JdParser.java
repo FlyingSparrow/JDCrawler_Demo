@@ -1,4 +1,4 @@
-package com.sparrow.crawler.parser;
+package com.sparrow.crawler.parser.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,6 +11,7 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
 import com.sparrow.crawler.entity.Book;
+import com.sparrow.crawler.parser.Parser;
 import com.sparrow.util.DateUtils;
 
 /**
@@ -21,7 +22,7 @@ import com.sparrow.util.DateUtils;
  * @date 2017年2月15日
  */
 @Component
-public class JdParser {
+public class JdParser implements Parser<Book> {
 
 	/**
 	 * 
@@ -31,7 +32,7 @@ public class JdParser {
 	 * @author wjc
 	 * @date 2017年2月15日
 	 */
-	public List<Book> parseBook(String html) {
+	public List<Book> parse(String html) {
 		List<Book> result = new ArrayList<Book>();
 
 		Date currentDate = DateUtils.currentDate();

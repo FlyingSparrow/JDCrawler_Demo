@@ -2,10 +2,12 @@ package com.sparrow.util;
 
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.Years;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * 
@@ -172,6 +174,27 @@ public class DateUtils {
 	public static Date currentDate(){
 		DateTime now = new DateTime();
 		return now.toDate();
+	}
+	
+	/**
+	 * 
+	 * <p>Description: 根据出生日期计算年龄</p>
+	 * @param birth
+	 * @return
+	 * @author wjc
+	 * @date 2017年2月16日
+	 */
+	public static String getAgeFromBirth(String birth) {
+		if (birth == null || "".equals(birth)) {
+			return "";
+		}
+		DateTimeFormatter format = DateTimeFormat.forPattern(DATE_FORMAT);
+		// 时间解析
+		LocalDate birthday = DateTime.parse(birth, format).toLocalDate();
+		LocalDate now = new LocalDate();
+		Years age = Years.yearsBetween(birthday, now);
+		
+		return age.getYears() + "";
 	}
 
 }
