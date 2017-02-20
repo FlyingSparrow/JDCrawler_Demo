@@ -1,0 +1,31 @@
+package com.sparrow.crawler.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.sparrow.crawler.entity.mtime.MovieUrl;
+import com.sparrow.crawler.repository.MovieUrlRepository;
+import com.sparrow.crawler.service.MovieUrlService;
+
+/**
+ * 
+ * <p>Title: MovieUrlServiceImpl</p>
+ * <p>Description: 电影url信息的业务层接口实现类</p>
+ * @author wjc
+ * @date 2017年2月18日
+ */
+@Transactional
+@Service
+public class MovieUrlServiceImpl implements MovieUrlService {
+
+	@Autowired
+	private MovieUrlRepository movieUrlRepository;
+	
+	@Override
+	public boolean save(MovieUrl movieUrl) {
+		movieUrlRepository.save(movieUrl);
+		return true;
+	}
+
+}
