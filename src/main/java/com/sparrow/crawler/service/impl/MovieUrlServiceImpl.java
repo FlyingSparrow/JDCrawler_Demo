@@ -1,5 +1,7 @@
 package com.sparrow.crawler.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,4 +30,17 @@ public class MovieUrlServiceImpl implements MovieUrlService {
 		return true;
 	}
 
+	@Override
+	public boolean isExist(String prmovieId) {
+		MovieUrl model = movieUrlRepository.findByPrmovieId(prmovieId);
+		
+		return (model != null);
+	}
+
+	@Override
+	public boolean batchAddMovieUrl(List<MovieUrl> list) {
+		movieUrlRepository.save(list);
+		return true;
+	}
+	
 }

@@ -16,4 +16,5 @@ import com.sparrow.crawler.entity.mtime.MovieUrl;
 public interface MovieUrlRepository extends JpaSpecificationExecutor<MovieUrl>, 
 	JpaRepository<MovieUrl, Long>, PagingAndSortingRepository<MovieUrl, Long> {
 	
+	MovieUrl findByPrmovieId(String prmovieId);
 }
