@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sparrow.base.controller.BaseController;
+import com.sparrow.crawler.entity.mtime.Movie;
 import com.sparrow.crawler.entity.mtime.MovieUrl;
 import com.sparrow.crawler.service.MovieCommentService;
 import com.sparrow.crawler.service.MovieService;
@@ -71,6 +72,20 @@ public class MtimeMovieController extends BaseController {
 			logger.error("批量添加电影url信息出错，电影url信息: {}，异常信息：{}", list, e);
 		}
 		return fail("批量添加电影url信息失败，请重试");
+	}
+	
+	@RequestMapping("/batchAddMovie")
+	@ResponseBody
+	public AjaxResult batchAddMovie(@RequestBody List<Movie> list){
+		try {
+			if(list == null){
+				return fail("电影信息不能为空");
+			}
+			movieService.batchAddMovie(list);
+		} catch (Exception e) {
+			logger.error("批量添加电影信息出错，电影信息: {}，异常信息：{}", list, e);
+		}
+		return fail("批量添加电影信息失败，请重试");
 	}
 	
 }

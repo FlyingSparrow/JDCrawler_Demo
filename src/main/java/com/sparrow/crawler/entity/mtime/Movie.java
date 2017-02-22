@@ -44,7 +44,7 @@ public class Movie implements Serializable {
 	private String website;// 网站
 	@Column(name = "is_crawler", unique = false, nullable = false)
 	private Integer isCrawler;// 是否爬虫抓取的数据，0：否；1：是
-	@Column(name = "prmovie_id", unique = false, nullable = false)
+	@Column(name = "prmovie_id", unique = false, nullable = true)
 	private String prmovieId;// 预告片id
 	@Column(name = "title", unique = false, nullable = false)
 	private String title;// 电影名称

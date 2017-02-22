@@ -1,5 +1,7 @@
 package com.sparrow.crawler.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,19 @@ public class MovieServiceImpl implements MovieService {
 	@Override
 	public boolean save(Movie movie) {
 		movieRepository.save(movie);
+		return true;
+	}
+
+	@Override
+	public boolean isExist(String movieId) {
+		Movie movie = movieRepository.findByMovieId(movieId);
+		
+		return (movie != null);
+	}
+
+	@Override
+	public boolean batchAddMovie(List<Movie> list) {
+		movieRepository.save(list);
 		return true;
 	}
 

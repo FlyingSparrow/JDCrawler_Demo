@@ -15,4 +15,7 @@ import com.sparrow.crawler.entity.mtime.Movie;
  */
 public interface MovieRepository extends JpaSpecificationExecutor<Movie>, 
 	JpaRepository<Movie, Long>, PagingAndSortingRepository<Movie, Long> {
+	
+	Movie findByMovieId(String movieId);
+	
 }
