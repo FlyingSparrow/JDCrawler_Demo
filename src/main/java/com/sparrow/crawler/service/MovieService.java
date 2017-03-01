@@ -12,4 +12,6 @@ public interface MovieService {
 	
 	boolean batchAddMovie(List<Movie> list);
 	
+	List<Movie> findAll();
+	
 }

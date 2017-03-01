@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -12,9 +14,14 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import com.alibaba.fastjson.JSON;
 import com.sparrow.base.BaseTests;
+import com.sparrow.crawler.entity.mtime.JsonModel;
 import com.sparrow.crawler.entity.mtime.Movie;
+import com.sparrow.crawler.entity.mtime.MovieUrl;
+import com.sparrow.crawler.service.MovieService;
 import com.sparrow.util.FileUtils;
 import com.sparrow.util.HttpUtils;
 
@@ -26,6 +33,9 @@ import com.sparrow.util.HttpUtils;
  * @date 2017年2月18日
  */
 public class MtimeMovieTest extends BaseTests {
+	
+	@Autowired
+	private MovieService movieService;
 	
 	@Test
 	public void testFetchMtimeMovieInfo(){
@@ -74,9 +84,9 @@ public class MtimeMovieTest extends BaseTests {
 		
 		List<Movie> distinctMovieList = getDistinctMovieList(list);
 		
-//		String url = "/mtime/batchAddMovie";
-//		String response = performAndGetResponse(url, distinctMovieList);
-//		logger.info("批量添加电影信息，电影信息：{}，执行结果：{}", distinctMovieList, response);
+		String url = "/mtime/batchAddMovie";
+		String response = performAndGetResponse(url, distinctMovieList);
+		logger.info("批量添加电影信息，电影信息：{}，执行结果：{}", distinctMovieList, response);
 	}
 	
 	private List<Movie> getDistinctMovieList(List<Movie> list){
@@ -98,20 +108,24 @@ public class MtimeMovieTest extends BaseTests {
 		for (Element element : elements) {
 			String movieId = element.select("span").attr("objid");
 			if(StringUtils.isNotEmpty(movieId)){
-				String movieUrl = element.select("a").attr("href");
-				String title = element.select("a").text();
-				if(title.indexOf("(") != -1){
-					title = title.substring(0, title.indexOf("("));
+				if(movieId.length() > 5){
+					String movieUrl = element.select("a").attr("href");
+					String title = element.select("a").text();
+					if(title.indexOf("(") != -1){
+						title = title.substring(0, title.indexOf("("));
+					}
+					logger.info("movieId: {}， title: {}, movieUrl: {}", movieId, title, movieUrl);
+					
+					Movie movie = new Movie();
+					movie.setMovieId("mtime"+movieId);
+					movie.setTitle(title);
+					movie.setUrl(movieUrl+"trailer.html");
+					movie.setIsCrawler(0);
+					movie.setWebsite("时光网");
+					list.add(movie);
+				}else{
+					logger.info("length <= 5, movieId: {}", movieId);
 				}
-				logger.info("movieId: {}， title: {}, movieUrl: {}", movieId, title, movieUrl);
-				
-				Movie movie = new Movie();
-				movie.setMovieId("mtime"+movieId);
-				movie.setTitle(title);
-				movie.setUrl(movieUrl+"trailer.html");
-				movie.setIsCrawler(0);
-				movie.setWebsite("时光网");
-				list.add(movie);
 			}
 		}
 		
@@ -156,21 +170,25 @@ public class MtimeMovieTest extends BaseTests {
 			System.out.println(element.outerHtml());
 			String movieId = element.select("span").attr("objid");
 			if(StringUtils.isNotEmpty(movieId)){
-				String movieUrl = element.select("h3 > a").attr("href");
-				if(!movieUrl.startsWith("http://people")){
-					String title = element.select("h3 > a").text();
-					if(title.indexOf("(") != -1){
-						title = title.substring(0, title.indexOf("("));
+				if(movieId.length() > 5){
+					String movieUrl = element.select("h3 > a").attr("href");
+					if(!movieUrl.startsWith("http://people")){
+						String title = element.select("h3 > a").text();
+						if(title.indexOf("(") != -1){
+							title = title.substring(0, title.indexOf("("));
+						}
+						logger.info("movieId: {}， title: {}, movieUrl: {}", movieId, title, movieUrl);
+						
+						Movie movie = new Movie();
+						movie.setMovieId("mtime"+movieId);
+						movie.setTitle(title);
+						movie.setUrl(movieUrl+"trailer.html");
+						movie.setIsCrawler(0);
+						movie.setWebsite("时光网");
+						list.add(movie);
 					}
-					//logger.info("movieId: {}， title: {}, movieUrl: {}", movieId, title, movieUrl);
-					
-					Movie movie = new Movie();
-					movie.setMovieId("mtime"+movieId);
-					movie.setTitle(title);
-					movie.setUrl(movieUrl+"trailer.html");
-					movie.setIsCrawler(0);
-					movie.setWebsite("时光网");
-					list.add(movie);
+				}else{
+					logger.info("length <= 5, movieId: {}", movieId);
 				}
 			}
 		}
@@ -180,21 +198,87 @@ public class MtimeMovieTest extends BaseTests {
 	
 	@Test
 	public void testFetchMtimeTrailerInfo(){
-		String url = "http://video.mtime.com/trailer/";
-		String html = HttpUtils.getRawHtml(url);
-		
-		File file = new File("E:/mtimeTrailer.txt");
-		FileUtils.writeFile(file, html);
-		
-		Document doc = Jsoup.parse(html);
-		Elements elements = doc.select("a[class=imgs_box]");
-		for (Element element : elements) {
-//			System.out.println(element.html());
-//			System.out.println("========================");
-			String previewUrl = element.attr("href");
-			logger.info("previewUrl: {}", previewUrl);
+		List<Movie> list = movieService.findAll();
+		if(list != null){
+			List<MovieUrl> muList = new ArrayList<MovieUrl>();
+			for(Movie item : list){
+				String url = item.getUrl();
+				String html = HttpUtils.getRawHtml(url);
+				
+//				File file = new File("E:/mtime/mtimeTrailer"+item.getMovieId()+".txt");
+//				FileUtils.writeFile(file, html);
+				
+				Pattern data1 = Pattern.compile("预告片\":(.*?)\\,(\"拍摄花絮|\"精彩片段)");
+				Matcher dataMatcher1 = data1.matcher(html);
+				String da1 = "";
+				while (dataMatcher1.find()) {
+					// 待解析的json字符串
+					da1 = dataMatcher1.group(1);
+				}
+				if (da1.length() != 0) {
+//					logger.info("da1: {}", da1);
+					List<JsonModel> jsonList = JSON.parseArray(da1, JsonModel.class);
+					for(JsonModel jmItem : jsonList){
+						MovieUrl mu = new MovieUrl();
+						mu.setPrmovieId("mtime"+jmItem.getVideoId());
+						mu.setMovieId("mtime"+jmItem.getMovieId());
+						mu.setUrl(jmItem.getUrl());
+						mu.setTitle(jmItem.getShortTitle());
+						muList.add(mu);
+					}
+				}
+			}
+			logger.info("muList: {}", muList);
 		}
 	}
 	
+	@Test
+	public void testFindAllMovie(){
+		String url = "/mtime/findAllMovie";
+		String response = performAndGetResponse(url, null);
+		logger.info("执行结果：{}", response);
+	}
+	
+	@Test
+	public void testBatchAddMovieUrl(){
+		String url = "/mtime/batchAddMovieUrl";
+		List<MovieUrl> muList = getMovieUrlList();
+		String response = performAndGetResponse(url, muList);
+		logger.info("执行结果：{}", response);
+	}
+	
+	private List<MovieUrl> getMovieUrlList(){
+		List<MovieUrl> muList = new ArrayList<MovieUrl>();
+		
+		List<Movie> list = movieService.findAll();
+		if(list != null){
+			Pattern data1 = Pattern.compile("预告片\":(.*?)\\,(\"拍摄花絮|\"精彩片段)");
+			for(Movie item : list){
+				String url = item.getUrl();
+				String html = HttpUtils.getRawHtml(url);
+				
+				Matcher dataMatcher1 = data1.matcher(html);
+				String da1 = "";
+				// 待解析的json字符串
+				while (dataMatcher1.find()) {
+					da1 = dataMatcher1.group(1);
+				}
+				if (da1.length() != 0) {
+					List<JsonModel> jsonList = JSON.parseArray(da1, JsonModel.class);
+					for(JsonModel jmItem : jsonList){
+						MovieUrl mu = new MovieUrl();
+						mu.setPrmovieId("mtime"+jmItem.getVideoId());
+						mu.setMovieId("mtime"+jmItem.getMovieId());
+						mu.setUrl(jmItem.getUrl());
+						mu.setTitle(jmItem.getShortTitle());
+						muList.add(mu);
+					}
+				}
+			}
+			logger.info("muList: {}", muList);
+		}
+		
+		return muList;
+	}
 	
 }

@@ -68,6 +68,8 @@ public class MtimeMovieController extends BaseController {
 				return fail("电影url信息不能为空");
 			}
 			movieUrlService.batchAddMovieUrl(list);
+			
+			return success("success");
 		} catch (Exception e) {
 			logger.error("批量添加电影url信息出错，电影url信息: {}，异常信息：{}", list, e);
 		}
@@ -87,5 +89,48 @@ public class MtimeMovieController extends BaseController {
 		}
 		return fail("批量添加电影信息失败，请重试");
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	@RequestMapping("/findAllMovie")
+	@ResponseBody
+	public AjaxResult findAllMovie(){
+		try {
+			List<Movie> list = movieService.findAll();
+			
+			logger.info("list: {}", list);
+			
+			return success(list);
+		} catch (Exception e) {
+			logger.error(": {}，异常信息：{}", e);
+		}
+		return fail("失败，请重试");
+	}
+	
+	
+	
+	
+	
+	
 	
 }

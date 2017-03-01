@@ -12,7 +12,8 @@ public class JsonModel implements Serializable {
 	private static final long serialVersionUID = 4759616898306089935L;
 	private String videoId;//电影片段id
 	private String movieId;//电影id
-	private String shortTitle;//简称
+	private String title;//电影预告片名称
+	private String shortTitle;//电影预告片简称
 	private String prmovieId;//电影预告片id
 	private String url;//电影预告片url
 
@@ -30,6 +31,14 @@ public class JsonModel implements Serializable {
 
 	public void setMovieId(String movieId) {
 		this.movieId = movieId;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public String getShortTitle() {
