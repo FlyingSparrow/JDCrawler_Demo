@@ -67,7 +67,7 @@ public class MtimeMovieController extends BaseController {
 			if(list == null){
 				return fail("电影url信息不能为空");
 			}
-			movieUrlService.batchAddMovieUrl(list);
+			movieUrlService.batchAddMovieUrl(list, null);
 			
 			return success("success");
 		} catch (Exception e) {
