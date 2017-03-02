@@ -2,10 +2,12 @@ package com.sparrow.util;
 
 import java.io.IOException;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.GzipDecompressingEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -63,6 +65,38 @@ public class HttpUtils {
 			int statusCode = response.getStatusLine().getStatusCode();
 			if (statusCode == HttpStatus.SC_OK) {
 				result = EntityUtils.toString(httpEntity, SysConst.ENCODING_UTF_8);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				EntityUtils.consume(httpEntity);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return result;
+	}
+	
+	public static String executeForGzipEntity(HttpClient httpclient, 
+			String url){
+		String result = null;
+		
+		HttpEntity httpEntity = null;
+		try {
+			HttpGet getMethod = new HttpGet(url);
+			HttpResponse response = httpclient.execute(getMethod);
+			httpEntity = response.getEntity();
+			
+			
+			Header[] headers = response.getHeaders("Content-Encoding");
+			
+			
+			int statusCode = response.getStatusLine().getStatusCode();
+			if (statusCode == HttpStatus.SC_OK) {
+				GzipDecompressingEntity zipRes = new GzipDecompressingEntity(httpEntity);
+				result = EntityUtils.toString(zipRes, SysConst.ENCODING_GB18030);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

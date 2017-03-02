@@ -21,4 +21,6 @@ public class SysConst {
 	
 	public static final String ENCODING_UTF_8 = "UTF-8";
 	
+	public static final String ENCODING_GB18030 = "GB18030";
+	
 }
