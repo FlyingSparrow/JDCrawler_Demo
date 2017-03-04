@@ -45,8 +45,10 @@ public class MovieUrlServiceImpl implements MovieUrlService {
 	public boolean batchAddMovieUrl(List<MovieUrl> list, String movieId) {
 		movieUrlRepository.save(list);
 		Movie movie = movieService.findByMovieId(movieId);
-		movie.setIsCrawler(1);
-		movieService.save(movie);
+		if(movie != null){
+			movie.setIsCrawler(1);
+			movieService.save(movie);
+		}
 		
 		return true;
 	}

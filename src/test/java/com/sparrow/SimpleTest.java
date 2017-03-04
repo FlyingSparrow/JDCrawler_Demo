@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sparrow.constants.SysConst;
+import com.sparrow.util.HttpUtils;
 
 public class SimpleTest {
 
@@ -88,6 +89,13 @@ public class SimpleTest {
 				+ "<body><p>Parsed HTML into a doc.</p></body></html>";
 		Document doc = Jsoup.parse(html);
 		logger.info("doc: \n{}", doc);
+	}
+	
+	@Test
+	public void testHttpClient2(){
+		String url = "http://esf.hf.fang.com/";
+		String result = HttpUtils.getRawHtml(url);
+		logger.info("result: {}", result);
 	}
 
 }

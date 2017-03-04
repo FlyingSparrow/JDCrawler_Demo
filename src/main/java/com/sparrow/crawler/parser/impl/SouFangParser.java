@@ -15,7 +15,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
-import com.sparrow.crawler.entity.Book;
 import com.sparrow.crawler.entity.soufang.Address;
 import com.sparrow.crawler.parser.Parser;
 

@@ -2,6 +2,7 @@ package com.sparrow;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -198,38 +199,7 @@ public class MtimeMovieTest extends BaseTests {
 	
 	@Test
 	public void testFetchMtimeTrailerInfo(){
-		List<Movie> list = movieService.findAll();
-		if(list != null){
-			List<MovieUrl> muList = new ArrayList<MovieUrl>();
-			for(Movie item : list){
-				String url = item.getUrl();
-				String html = HttpUtils.getRawHtml(url);
-				
-//				File file = new File("E:/mtime/mtimeTrailer"+item.getMovieId()+".txt");
-//				FileUtils.writeFile(file, html);
-				
-				Pattern data1 = Pattern.compile("预告片\":(.*?)\\,(\"拍摄花絮|\"精彩片段)");
-				Matcher dataMatcher1 = data1.matcher(html);
-				String da1 = "";
-				while (dataMatcher1.find()) {
-					// 待解析的json字符串
-					da1 = dataMatcher1.group(1);
-				}
-				if (da1.length() != 0) {
-//					logger.info("da1: {}", da1);
-					List<JsonModel> jsonList = JSON.parseArray(da1, JsonModel.class);
-					for(JsonModel jmItem : jsonList){
-						MovieUrl mu = new MovieUrl();
-						mu.setPrmovieId("mtime"+jmItem.getVideoId());
-						mu.setMovieId("mtime"+jmItem.getMovieId());
-						mu.setUrl(jmItem.getUrl());
-						mu.setTitle(jmItem.getShortTitle());
-						muList.add(mu);
-					}
-				}
-			}
-			logger.info("muList: {}", muList);
-		}
+		getMovieUrlList();
 	}
 	
 	@Test
@@ -242,9 +212,31 @@ public class MtimeMovieTest extends BaseTests {
 	@Test
 	public void testBatchAddMovieUrl(){
 		String url = "/mtime/batchAddMovieUrl";
+		List<Movie> list = movieService.findAll();
+		if(list != null){
+			for(Movie item : list){
+				Map<String, Object> params = new HashMap<String, Object>();
+				List<MovieUrl> muList = getMovieUrlListByMovieId(item.getMovieId());
+				params.put("list", JSON.toJSONString(muList));
+				params.put("movieId", item.getMovieId());
+				String response = performAndGetResponse(url, muList);
+				logger.info("执行结果：{}", response);
+			}
+		}
+	}
+	
+	private List<MovieUrl> getMovieUrlListByMovieId(String movieId){
+		List<MovieUrl> result = new ArrayList<MovieUrl>();
 		List<MovieUrl> muList = getMovieUrlList();
-		String response = performAndGetResponse(url, muList);
-		logger.info("执行结果：{}", response);
+		if(muList != null){
+			for(MovieUrl item : muList){
+				if(item.getMovieId().equals(movieId)){
+					result.add(item);
+				}
+			}
+		}
+		
+		return result;
 	}
 	
 	private List<MovieUrl> getMovieUrlList(){
@@ -261,14 +253,17 @@ public class MtimeMovieTest extends BaseTests {
 				String da1 = "";
 				// 待解析的json字符串
 				while (dataMatcher1.find()) {
+					String group = dataMatcher1.group();
 					da1 = dataMatcher1.group(1);
+					logger.info("group: {}, group1: {}", group, da1);
 				}
 				if (da1.length() != 0) {
 					List<JsonModel> jsonList = JSON.parseArray(da1, JsonModel.class);
 					for(JsonModel jmItem : jsonList){
+						String mtimeMovieId = "mtime"+jmItem.getMovieId();
 						MovieUrl mu = new MovieUrl();
 						mu.setPrmovieId("mtime"+jmItem.getVideoId());
-						mu.setMovieId("mtime"+jmItem.getMovieId());
+						mu.setMovieId(mtimeMovieId);
 						mu.setUrl(jmItem.getUrl());
 						mu.setTitle(jmItem.getShortTitle());
 						muList.add(mu);

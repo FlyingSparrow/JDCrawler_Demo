@@ -2,6 +2,7 @@ package com.sparrow.util;
 
 import java.io.IOException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -12,6 +13,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sparrow.constants.SysConst;
 
@@ -28,6 +31,8 @@ import com.sparrow.constants.SysConst;
  * @date 2017年2月15日
  */
 public class HttpUtils {
+	
+	private static final Logger logger = LoggerFactory.getLogger(HttpUtils.class);
 
 	private HttpUtils() {
 	}
@@ -62,41 +67,27 @@ public class HttpUtils {
 			HttpGet getMethod = new HttpGet(url);
 			HttpResponse response = httpclient.execute(getMethod);
 			httpEntity = response.getEntity();
+			
+			String contentEncoding = null;
+			Header[] headers = response.getAllHeaders();
+			for(Header item : headers){
+//				logger.info("HttpRequest Header, name: [{}], value: [{}]", 
+//						item.getName(), item.getValue());
+				if("Content-Encoding".equals(item.getName())){
+					contentEncoding = item.getValue();
+					logger.info("contentEncoding: {}", contentEncoding);
+				}
+			}
+			
 			int statusCode = response.getStatusLine().getStatusCode();
 			if (statusCode == HttpStatus.SC_OK) {
 				result = EntityUtils.toString(httpEntity, SysConst.ENCODING_UTF_8);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				EntityUtils.consume(httpEntity);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		return result;
-	}
-	
-	public static String executeForGzipEntity(HttpClient httpclient, 
-			String url){
-		String result = null;
-		
-		HttpEntity httpEntity = null;
-		try {
-			HttpGet getMethod = new HttpGet(url);
-			HttpResponse response = httpclient.execute(getMethod);
-			httpEntity = response.getEntity();
-			
-			
-			Header[] headers = response.getHeaders("Content-Encoding");
-			
-			
-			int statusCode = response.getStatusLine().getStatusCode();
-			if (statusCode == HttpStatus.SC_OK) {
-				GzipDecompressingEntity zipRes = new GzipDecompressingEntity(httpEntity);
-				result = EntityUtils.toString(zipRes, SysConst.ENCODING_GB18030);
+				
+				if(StringUtils.isNotEmpty(contentEncoding) && contentEncoding
+						.toLowerCase().indexOf("gzip") != -1){
+					GzipDecompressingEntity zipRes = new GzipDecompressingEntity(httpEntity);
+					result = EntityUtils.toString(zipRes, SysConst.ENCODING_GB18030);
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

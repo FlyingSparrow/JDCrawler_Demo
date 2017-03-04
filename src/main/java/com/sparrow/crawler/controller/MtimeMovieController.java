@@ -1,7 +1,9 @@
 package com.sparrow.crawler.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,12 +64,22 @@ public class MtimeMovieController extends BaseController {
 	
 	@RequestMapping("/batchAddMovieUrl")
 	@ResponseBody
-	public AjaxResult batchAddMovieUrl(@RequestBody List<MovieUrl> list){
+	public AjaxResult batchAddMovieUrl(@RequestBody List<MovieUrl> list, 
+			@RequestBody String movieId){
 		try {
 			if(list == null){
 				return fail("电影url信息不能为空");
 			}
-			movieUrlService.batchAddMovieUrl(list, null);
+			if(StringUtils.isEmpty(movieId)){
+				return fail("电影id不能为空");
+			}
+			List<MovieUrl> newList = new ArrayList<MovieUrl>();
+			for(MovieUrl item : list){
+				if(!movieUrlService.isExist(item.getPrmovieId())){
+					newList.add(item);
+				}
+			}
+			movieUrlService.batchAddMovieUrl(newList, movieId);
 			
 			return success("success");
 		} catch (Exception e) {
@@ -83,35 +95,19 @@ public class MtimeMovieController extends BaseController {
 			if(list == null){
 				return fail("电影信息不能为空");
 			}
-			movieService.batchAddMovie(list);
+			List<Movie> newList = new ArrayList<Movie>();
+			for(Movie item : list){
+				if(!movieService.isExist(item.getMovieId())){
+					newList.add(item);
+				}
+			}
+			movieService.batchAddMovie(newList);
 		} catch (Exception e) {
 			logger.error("批量添加电影信息出错，电影信息: {}，异常信息：{}", list, e);
 		}
 		return fail("批量添加电影信息失败，请重试");
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	@RequestMapping("/findAllMovie")
 	@ResponseBody
 	public AjaxResult findAllMovie(){
@@ -126,11 +122,5 @@ public class MtimeMovieController extends BaseController {
 		}
 		return fail("失败，请重试");
 	}
-	
-	
-	
-	
-	
-	
 	
 }

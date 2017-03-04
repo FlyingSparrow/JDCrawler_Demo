@@ -35,15 +35,15 @@ public class MtimeThread extends Thread {
 		
 		Pattern data1 = Pattern.compile("预告片\":(.*?)\\,(\"拍摄花絮|\"精彩片段)");
 		Matcher dataMatcher1 = data1.matcher(html);
-		String da1 = "";
+		String info = "";
 		while (dataMatcher1.find()) {
 			// 待解析的json字符串
-			da1 = dataMatcher1.group(1);
+			info = dataMatcher1.group(1);
 		}
 		List<MovieUrl> muList = new ArrayList<MovieUrl>();
-		if (da1.length() != 0) {
-//			logger.info("da1: {}", da1);
-			List<JsonModel> jsonList = JSON.parseArray(da1, JsonModel.class);
+		if (info.length() != 0) {
+//			logger.info("info: {}", info);
+			List<JsonModel> jsonList = JSON.parseArray(info, JsonModel.class);
 			for(JsonModel jmItem : jsonList){
 				MovieUrl mu = new MovieUrl();
 				mu.setPrmovieId("mtime"+jmItem.getVideoId());
