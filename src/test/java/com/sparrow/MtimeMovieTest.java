@@ -253,9 +253,9 @@ public class MtimeMovieTest extends BaseTests {
 				String da1 = "";
 				// 待解析的json字符串
 				while (dataMatcher1.find()) {
-					String group = dataMatcher1.group();
+					//String group = dataMatcher1.group();
 					da1 = dataMatcher1.group(1);
-					logger.info("group: {}, group1: {}", group, da1);
+					//logger.info("group: {}, group1: {}", group, da1);
 				}
 				if (da1.length() != 0) {
 					List<JsonModel> jsonList = JSON.parseArray(da1, JsonModel.class);

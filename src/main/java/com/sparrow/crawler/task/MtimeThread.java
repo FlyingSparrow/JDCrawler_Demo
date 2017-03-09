@@ -32,13 +32,13 @@ public class MtimeThread extends Thread {
 	public void run() {
 		logger.info("url: {}", url);
 		String html = HttpUtils.getRawHtml(url);
-		
-		Pattern data1 = Pattern.compile("预告片\":(.*?)\\,(\"拍摄花絮|\"精彩片段)");
-		Matcher dataMatcher1 = data1.matcher(html);
+		//预告片的正则表达式
+		Pattern previewRegex = Pattern.compile("预告片\":(.*?)\\,(\"拍摄花絮|\"精彩片段)");
+		Matcher matcher = previewRegex.matcher(html);
 		String info = "";
-		while (dataMatcher1.find()) {
+		while (matcher.find()) {
 			// 待解析的json字符串
-			info = dataMatcher1.group(1);
+			info = matcher.group(1);
 		}
 		List<MovieUrl> muList = new ArrayList<MovieUrl>();
 		if (info.length() != 0) {

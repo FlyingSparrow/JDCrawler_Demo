@@ -14,6 +14,13 @@ import com.sparrow.crawler.entity.mtime.Movie;
 import com.sparrow.crawler.service.MovieService;
 import com.sparrow.crawler.service.MovieUrlService;
 
+/**
+ * 
+ * <p>Title: CrawlPreviewTask</p>
+ * <p>Description: 抓取预告片信息的定时器</p>
+ * @author wjc
+ * @date 2017年3月7日
+ */
 @Component
 public class CrawlPreviewTask {
 
