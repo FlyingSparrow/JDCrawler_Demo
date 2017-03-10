@@ -1,6 +1,5 @@
 package com.sparrow.crawler.parser.impl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Component;
 import com.sparrow.crawler.entity.soufang.Address;
 import com.sparrow.crawler.parser.Parser;
 import com.sparrow.util.DateUtils;
+import com.sparrow.util.HttpUtils;
 
 /**
  * 
@@ -23,14 +23,14 @@ import com.sparrow.util.DateUtils;
  * Title: SouFangParser
  * </p>
  * <p>
- * Description: 搜房网解析器，解析html
+ * Description: 房源信息解析器，解析html
  * </p>
  * 
  * @author wjc
  * @date 2017年3月2日
  */
 @Component
-public class SouFangParser implements Parser<Address> {
+public class SouFangAddressParser implements Parser<Address> {
 
 	/**
 	 * 
@@ -58,9 +58,9 @@ public class SouFangParser implements Parser<Address> {
 			Address address = null;
 			Document document = null;
 			for (int i = 1; i < totalPages; i++) {
-				String everypageurl = "http://esf.hf.fang.com/house/i3" + i;
-				// 这里我就直接用Jsoup请求了
-				document = Jsoup.connect(everypageurl).timeout(50000).userAgent("bbbb").get();
+				String everyPageUrl = "http://esf.hf.fang.com/house/i3" + i;
+				String everyPageHtml = HttpUtils.getRawHtml(everyPageUrl);
+				document = Jsoup.parse(everyPageHtml);
 				Elements elements = document.select("dl[id~=D03_?]");
 				// 获取每一个子内容
 				for (Element element : elements) {
@@ -86,7 +86,7 @@ public class SouFangParser implements Parser<Address> {
 					}
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 

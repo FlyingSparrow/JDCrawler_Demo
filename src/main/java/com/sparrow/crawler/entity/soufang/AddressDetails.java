@@ -2,6 +2,13 @@ package com.sparrow.crawler.entity.soufang;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
@@ -11,6 +18,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * @author wjc
  * @date 2017年3月10日
  */
+@Entity
+@Table(name = "t_soufang_address_details")
 public class AddressDetails implements Serializable {
 	
 	/**
@@ -18,25 +27,46 @@ public class AddressDetails implements Serializable {
 	 */
 	private static final long serialVersionUID = -3790457953654365252L;
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", unique = true, nullable = false)
 	private Long id;
-	private String addressId;
-	private String title;
-	private String publishTime;
-	private String price;
-	private String houseType;
-	private String acreage;
-	private String useAcreage;
-	private String years;
-	private String orientation;
-	private String floor;
-	private String structure;
-	private String decoration;
-	private String type;
-	private String buildingType;
-	private String propertyRight;
-	private String estate;
-	private String school;
-	private String facilities;
+	@Column(name = "address_id", unique = false, nullable = false)
+	private String addressId;//房源id
+	@Column(name = "title", unique = false, nullable = false)
+	private String title;//房源标题
+	@Column(name = "publish_time", unique = false, nullable = false)
+	private String publishTime;//发布时间
+	@Column(name = "price", unique = false, nullable = true)
+	private String price;//总价/价格
+	@Column(name = "house_type", unique = false, nullable = true)
+	private String houseType;//户型
+	@Column(name = "acreage", unique = false, nullable = true)
+	private String acreage;//面积（建筑面积）
+	@Column(name = "use_acreage", unique = false, nullable = true)
+	private String useAcreage;//使用面积（使用面积=建筑面积X（1-0.23），计算结果为估算值，不是精确值）
+	@Column(name = "years", unique = false, nullable = true)
+	private String years;//年代
+	@Column(name = "orientation", unique = false, nullable = true)
+	private String orientation;//朝向
+	@Column(name = "floor", unique = false, nullable = true)
+	private String floor;//楼层
+	@Column(name = "structure", unique = false, nullable = true)
+	private String structure;//建筑结构
+	@Column(name = "decoration", unique = false, nullable = true)
+	private String decoration;//装修情况
+	@Column(name = "type", unique = false, nullable = true)
+	private String type;//住宅类型
+	@Column(name = "building_type", unique = false, nullable = true)
+	private String buildingType;//建筑类型
+	@Column(name = "property_right", unique = false, nullable = true)
+	private String propertyRight;//产权性质
+	@Column(name = "estate", unique = false, nullable = true)
+	private String estate;//房地产开发商
+	@Column(name = "school", unique = false, nullable = true)
+	private String school;//学校
+	@Column(name = "facilities", unique = false, nullable = true)
+	private String facilities;//房屋设施/配套设施
 
 	public Long getId() {
 		return id;
