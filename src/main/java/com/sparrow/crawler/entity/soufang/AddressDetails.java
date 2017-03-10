@@ -1,9 +1,25 @@
 package com.sparrow.crawler.entity.soufang;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class Contents {
-	private String id;
+/**
+ * 
+ * <p>Title: AddressDetails</p>
+ * <p>Description: 房源详细信息实体类</p>
+ * @author wjc
+ * @date 2017年3月10日
+ */
+public class AddressDetails implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3790457953654365252L;
+	
+	private Long id;
+	private String addressId;
 	private String title;
 	private String publishTime;
 	private String price;
@@ -22,12 +38,20 @@ public class Contents {
 	private String school;
 	private String facilities;
 
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getAddressId() {
+		return addressId;
+	}
+
+	public void setAddressId(String addressId) {
+		this.addressId = addressId;
 	}
 
 	public String getTitle() {

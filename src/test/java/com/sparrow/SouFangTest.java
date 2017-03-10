@@ -25,9 +25,22 @@ public class SouFangTest extends BaseTests {
 	private SouFangParser souFangParser;
 	
 	@Test
-	public void testFetchHouseInfo(){
-		String url = "http://esf.hf.fang.com/";
-		String rawHtml = HttpUtils.getRawHtml(url);
+	public void testBatchAddAddress(){
+		String addressInfoUrl = "http://esf.hf.fang.com/";
+		String rawHtml = HttpUtils.getRawHtml(addressInfoUrl);
+		List<Address> list = souFangParser.parse(rawHtml);
+		list.forEach(item -> {
+			logger.info("address: {}", item);
+		});
+		String url = "/soufang/batchAddAddress";
+		String response = performAndGetResponse(url, list);
+		logger.info("批量添加房源，执行结果：{}", response);
+	}
+	
+	@Test
+	public void testFetchAddressInfo(){
+		String addressInfoUrl = "http://esf.hf.fang.com/";
+		String rawHtml = HttpUtils.getRawHtml(addressInfoUrl);
 		FileUtils.writeFile(new File("E:/soufang/soufang_hf.html"), rawHtml);
 		List<Address> list = souFangParser.parse(rawHtml);
 		list.forEach(item -> {
