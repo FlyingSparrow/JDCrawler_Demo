@@ -10,6 +10,6 @@ public interface MovieUrlService {
 	
 	boolean isExist(String prmovieId);
 	
-	boolean batchAddMovieUrl(List<MovieUrl> list);
+	boolean batchAddMovieUrl(List<MovieUrl> list, String movieId);
 	
 }

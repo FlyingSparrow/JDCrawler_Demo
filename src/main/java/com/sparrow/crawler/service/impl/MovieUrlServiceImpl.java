@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sparrow.crawler.entity.mtime.Movie;
 import com.sparrow.crawler.entity.mtime.MovieUrl;
 import com.sparrow.crawler.repository.MovieUrlRepository;
+import com.sparrow.crawler.service.MovieService;
 import com.sparrow.crawler.service.MovieUrlService;
 
 /**
@@ -23,6 +25,8 @@ public class MovieUrlServiceImpl implements MovieUrlService {
 
 	@Autowired
 	private MovieUrlRepository movieUrlRepository;
+	@Autowired
+	private MovieService movieService;
 	
 	@Override
 	public boolean save(MovieUrl movieUrl) {
@@ -38,8 +42,14 @@ public class MovieUrlServiceImpl implements MovieUrlService {
 	}
 
 	@Override
-	public boolean batchAddMovieUrl(List<MovieUrl> list) {
+	public boolean batchAddMovieUrl(List<MovieUrl> list, String movieId) {
 		movieUrlRepository.save(list);
+		Movie movie = movieService.findByMovieId(movieId);
+		if(movie != null){
+			movie.setIsCrawler(1);
+			movieService.save(movie);
+		}
+		
 		return true;
 	}
 	
