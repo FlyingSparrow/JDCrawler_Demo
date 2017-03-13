@@ -3192,4 +3192,3 @@ CREATE TABLE `t_soufang_address_details` (
 -- ----------------------------
 -- Records of t_soufang_address_details
 -- ----------------------------
-
