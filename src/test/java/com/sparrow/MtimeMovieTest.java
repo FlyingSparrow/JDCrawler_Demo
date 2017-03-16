@@ -74,6 +74,8 @@ public class MtimeMovieTest extends BaseTests {
 		
 		String mtimeUrl = "http://movie.mtime.com/";
 		String html = HttpUtils.getRawHtml(mtimeUrl);
+		File file = new File("E:/mtimeMovie_20170314.txt");
+		FileUtils.writeFile(file, html);
 		
 		Document doc = Jsoup.parse(html);
 		List<Movie> globalNewMovieList = getGlobalNewMovieList(doc);
