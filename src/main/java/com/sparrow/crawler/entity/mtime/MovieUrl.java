@@ -44,6 +44,8 @@ public class MovieUrl implements Serializable {
 	private String url;// 电影url
 	@Column(name = "title", unique = false, nullable = false)
 	private String title;// 电影名称
+	@Column(name = "is_crawler", unique = false, nullable = true)
+	private Integer isCrawler;// 爬虫是否已经抓取过数据，0：否；1：是
 
 	public Long getId() {
 		return id;

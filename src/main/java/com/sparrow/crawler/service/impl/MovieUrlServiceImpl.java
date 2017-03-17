@@ -52,5 +52,10 @@ public class MovieUrlServiceImpl implements MovieUrlService {
 		
 		return true;
 	}
+
+	@Override
+	public List<MovieUrl> findListByIsCrawler(Integer isCrawler) {
+		return movieUrlRepository.findListByIsCrawler(isCrawler);
+	}
 	
 }

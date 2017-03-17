@@ -278,4 +278,14 @@ public class MtimeMovieTest extends BaseTests {
 		return muList;
 	}
 	
+	@Test
+	public void testFindByIsCrawler(){
+		String url = "/mtime/findMovieUrlList";
+		Integer isCrawler = 0;
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("isCrawler", isCrawler);
+		String response = performAndGetResponse(url, params);
+		logger.info("执行结果：{}", response);
+	}
+	
 }

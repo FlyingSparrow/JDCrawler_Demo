@@ -123,4 +123,22 @@ public class MtimeMovieController extends BaseController {
 		return fail("失败，请重试");
 	}
 	
+	@RequestMapping("/findMovieUrlList")
+	@ResponseBody
+	public AjaxResult findMovieUrlList(Integer isCrawler){
+		try {
+			if(isCrawler == null){
+				return fail("参数不能为空");
+			}
+			List<MovieUrl> list = movieUrlService.findListByIsCrawler(isCrawler);
+			
+			logger.info("list: {}", list);
+			
+			return success(list);
+		} catch (Exception e) {
+			logger.error(": {}，异常信息：{}", e);
+		}
+		return fail("失败，请重试");
+	}
+	
 }

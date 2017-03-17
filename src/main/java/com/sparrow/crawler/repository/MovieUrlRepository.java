@@ -1,5 +1,7 @@
 package com.sparrow.crawler.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -17,4 +19,6 @@ public interface MovieUrlRepository extends JpaSpecificationExecutor<MovieUrl>,
 	JpaRepository<MovieUrl, Long>, PagingAndSortingRepository<MovieUrl, Long> {
 	
 	MovieUrl findByPrmovieId(String prmovieId);
+	
+	List<MovieUrl> findListByIsCrawler(Integer isCrawler);
 }

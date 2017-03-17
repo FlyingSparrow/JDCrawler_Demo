@@ -12,4 +12,6 @@ public interface MovieUrlService {
 	
 	boolean batchAddMovieUrl(List<MovieUrl> list, String movieId);
 	
+	List<MovieUrl> findListByIsCrawler(Integer isCrawler);
+	
 }
